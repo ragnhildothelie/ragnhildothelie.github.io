@@ -91,7 +91,7 @@ $.ajax({
     }
 });
 var map = L.map('map', options);
-L.control.zoom({ position: 'topright'}).addTo(map);
+L.control.zoom({ position: 'bottomright'}).addTo(map);
 // load a tile layer
 var topo = L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', {
 		attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'

@@ -3308,6 +3308,9 @@ input, select, textarea {
 					#footer > .inner .copyright li:first-child {
 						margin-top: 0;
 					}
+			iframe {
+				height: 400px;
+			}
 
 		}
 
