@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+    <title>Eiendomsskatt</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <link rel="stylesheet" href="assets/css/main.css"/>
+    <noscript>
+        <link rel="stylesheet" href="assets/css/noscript.css"/>
+    </noscript>
+    <style></style>
+
+</head>
+<body class="is-preload">
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Header -->
+    <header id="header">
+        <div class="inner">
+
+            <!-- Logo -->
+            <a href="index.html" class="logo">
+                <span class="symbol"><img src="images/pin.svg" alt="Location icons created by kmg design - Flaticon"
+                                          width="256" height="256"/></span><span class="title">RAGNHILD ANGELSEN</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Menu -->
+    <nav id="menu">
+        <h2>Meny</h2>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="generic.html">Ipsum veroeros</a></li>
+            <li><a href="generic.html">Tempus etiam</a></li>
+            <li><a href="generic.html">Consequat dolor</a></li>
+            <li><a href="elements.html">Elements</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+            <h1>Eiendomsskatt Vestvågøy 2020</h1>
+            <p>I juni 2019 ble det gjort et vedtak i kommunen om retaksering av eiendommer med virkning fra og med 2020.
+                Det var derfor interessant å se skattelisten i 2020, men jeg syntes det var vanskelig å få en oversikt
+                utfra en tabell med data. Derfor visualiserte jeg skattelisten på kart. Jeg satte opp et kart som viste
+                takst på eiendommen, og et kart som viste endring i takst fra året før.</p>
+            <h2>Takst</h2>
+            Kartet viser takst hentet fra Vestvågøy kommune sitt dokument <a
+                href="https://www.vestvagoy.kommune.no/_f/p1/i8fa4ec8a-e87e-4583-9cfa-cc3707141c02/skattelisteoffentligettersyn_20200227_1118.pdf"
+                target="_blank" rel="noopener">'Skatteliste - offentlig ettersyn'</a> Utskriftsdato: 27.02.2020. Data er
+            kombinert med posisjon fra datasettet <a
+                href="https://kartkatalog.geonorge.no/metadata/matrikkelen-adresse-leilighetsnivaa/365b0591-b536-42a6-a20d-22e404fbfe55"
+                target="_blank" rel="noopener">Matrikkel - adresse (GeoNorge)</a>. Eiendomsnummer er brukt til
+            sammenkoblingen. Med forbehold om feil.<br>
+            <iframe src="property_tax_map.html" title="Eiendomsskatt" class="image main" height="800px"></iframe>
+            <h2>Endring i %</h2>
+            Kartet viser stigning i % for takst fra 2019 til 2020. Prosent = ((takst 2020 - takst 2019)/takst 2019)x100.
+            Med forbehold om feil.
+            <iframe src="property_tax_map_changes.html" title="Eiendomsskatt" class="image main"
+                    height="800px"></iframe>
+            <h2>Datakilder:</h2>
+            <ul>
+                <li>Vestvågøy kommune. Skatteliste - offentlig ettersyn for 2019 og <a
+                href="https://www.vestvagoy.kommune.no/_f/p1/i8fa4ec8a-e87e-4583-9cfa-cc3707141c02/skattelisteoffentligettersyn_20200227_1118.pdf"
+                target="_blank" rel="noopener">2020</a>. Utskriftsdato:
+                    21.02.2019 og 27.02.2020.
+                </li>
+                <li>Kartverket. <a
+                href="https://kartkatalog.geonorge.no/metadata/matrikkelen-adresse-leilighetsnivaa/365b0591-b536-42a6-a20d-22e404fbfe55"
+                target="_blank" rel="noopener">Matrikkelen - Adresse Leilighetsnivå.</a></li>
+                <li>Bakgrunnskart: Kartverket. Topografisk Norgeskart, Matrikkelen - Eiendomskart Teig.</li>
+            </ul>
+            <h2>Verktøy:</h2>
+            <ul>
+                <li>Excel</li>
+                <li>Python</li>
+                <li>QGIS</li>
+                <li>Leaflet v.1.0.1</li>
+            </ul>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="copyright">
+                <li>&copy; R. Angelsen. All rights reserved</li>
+                <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+            </ul>
+        </div>
+    </footer>
+
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
