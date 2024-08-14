@@ -13,6 +13,7 @@
     <noscript>
         <link rel="stylesheet" href="assets/css/noscript.css"/>
     </noscript>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style></style>
 
 </head>
@@ -62,7 +63,10 @@
             sammenkoblingen. Med forbehold om feil.<br>
             <iframe src="property_tax_map.html" title="Eiendomsskatt" class="image main" height="800px"></iframe>
             <h2>Endring i %</h2>
-            Kartet viser stigning i % for takst fra 2019 til 2020. Prosent = ((takst 2020 - takst 2019)/takst 2019)x100.
+            Kartet viser stigning i % for takst fra 2019 til 2020. Endring i prosent er beregnet slik:
+            \begin{equation}
+            {{takst 2020 - takst 2019}\over takst 2019}*100
+            \end{equation}
             Med forbehold om feil.
             <iframe src="property_tax_map_changes.html" title="Eiendomsskatt" class="image main"
                     height="800px"></iframe>
