@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stormflo og havnivå</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+          integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
+            integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Leaflet SwipeMode -->
+    <script type="application/javascript"
+            src="https://unpkg.com/leaflet-swipe-mode@0.0.7/dist/leaflet.swipemode.min.js"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-swipe-mode@0.0.7/dist/leaflet.swipemode.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-flow: column;
+            height: 100%;
+        }
+
+        .wrapper .header {
+            flex: 0 1 auto;
+            background: #7e8aa0;
+            padding: 35px;
+        }
+
+        .wrapper .content {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div class="row g-3">
+            <div class="col">
+                <div class="form-floating">
+                    <select class="form-select" id="floatingSelectLeft" aria-label="Floating label select example"
+                            onchange="change_left(this.value);">
+                        <option value="Middelhøyvann nå" selected="selected">Middelhøyvann nå</option>
+                        <option value="Øvre estimat stormflo i dag">Øvre estimat stormflo i dag</option>
+                        <option value="20-års stormflo i dag">20-års stormflo i dag</option>
+                        <option value="200-års stormflo i dag">200-års stormflo i dag</option>
+                        <option value="1000-års stormflo i dag">1000-års stormflo i dag</option>
+                        <option value="Middelhøyvann i år 2100">Middelhøyvann i år 2100</option>
+                        <option value="Øvre estimat stormflo i år 2100">Øvre estimat stormflo i år 2100</option>
+                        <option value="200-års stormflo i år 2100">200-års stormflo i år 2100</option>
+                        <option value="1000-års stormflo i år 2100">1000-års stormflo i år 2100</option>
+                        <option value="Middelhøyvann i år 2150">Middelhøyvann i år 2150</option>
+                        <option value="Øvre estimat stormflo i år 2150">Øvre estimat stormflo i år 2150</option>
+                    </select>
+                    <label for="floatingSelectLeft">Hovedlag (venstre)</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <select class="form-select" id="floatingSelectRight" aria-label="Floating label select example"
+                            onchange="change_right(this.value);">
+                        <option value="Middelhøyvann nå">Middelhøyvann nå</option>
+                        <option value="Øvre estimat stormflo i dag">Øvre estimat stormflo i dag</option>
+                        <option value="20-års stormflo i dag">20-års stormflo i dag</option>
+                        <option value="200-års stormflo i dag">200-års stormflo i dag</option>
+                        <option value="1000-års stormflo i dag">1000-års stormflo i dag</option>
+                        <option value="Middelhøyvann i år 2100" selected="selected">Middelhøyvann i år 2100</option>
+                        <option value="Øvre estimat stormflo i år 2100">Øvre estimat stormflo i år 2100</option>
+                        <option value="200-års stormflo i år 2100">200-års stormflo i år 2100</option>
+                        <option value="1000-års stormflo i år 2100">1000-års stormflo i år 2100</option>
+                        <option value="Middelhøyvann i år 2150">Middelhøyvann i år 2150</option>
+                        <option value="Øvre estimat stormflo i år 2150">Øvre estimat stormflo i år 2150</option>
+                    </select>
+                    <label for="floatingSelectRight">Sammenlign med... (høyre)</label>
+                </div>
+            </div>
+            <div class="col-sm">
+                <button class="btn btn-light btn-lg" type="button" aria-expanded="false" id="my-button"
+                        onclick="start_toggle('Middelhøyvann nå', '1000-års stormflo i dag')">Skru sammenligning av
+                </button>
+            </div>
+            <div class="col-sm">
+                <button class="btn btn-light btn-lg" type="button" aria-expanded="false" id="stormflo_link"
+                        onclick="window.open('https://kartkatalog.geonorge.no/metadata/stormflo-og-havnivaa/fbb95c67-623f-430a-9fa5-9cfcea8366b3', '_blank')">Info om data: Stormflo og havnivå
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="content">
+        <div id="map"></div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    let rost = [67.52, 12.11]
+    let rost_ll = [67.40808705756392, 11.831486551679344]
+    let rost_ur = [67.54786327289624, 12.255296469688796]
+    let vv_ll = [67.99389542342294, 13.379061812382217]
+    let vv_ur = [68.40418975307624, 14.199294999384936]
+    let moskenes = [67.93, 12.99]
+    let vv = [68.217, 13.781]
+
+    const height = document.querySelector('#map').offsetHeight
+    console.log(height)
+
+    const tile_size = L.point(2488, 1959)
+    const bbox = null //L.latLngBounds (vv_ll,vv_ur)
+    const epsg_crs = L.CRS.EPSG4326
+    const start_opacity = 0;
+
+
+    const basemap = L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png', {
+        attribution: '&copy; <a href="http://www.kartverket.no/">Kartverket</a>',
+        name: 'topografisk Norgeskart'
+    })
+
+    // Dekningskart
+    const dekningskart = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'dekningsomrade',
+        name: 'Dekningsområde',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox
+    })
+
+    // Middelhøyvann nå
+    var middelhoyvann_klimaarna = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'middelhoyvann_klimaarna',
+        name: 'Middelhøyvann nå',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    // Middelhøyvann i år 2100
+    var middelhoyvann_klimaar2100 = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'middelhoyvann_klimaar2100',
+        name: 'Middelhøyvann i år 2100',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    // Middelhøyvann i år 2150
+    const middelhoyvann_klimaar2150 = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'middelhoyvann_klimaar2150',
+        name: 'Middelhøyvann i år 2150',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    // 1000-års stormflo i dag
+    const stormflo1000ar_klimaarna = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'stormflo1000ar_klimaarna',
+        name: '1000-års stormflo i dag',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    // 1000-års stormflo i år 2100
+    const stormflo1000ar_klimaar2100 = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'stormflo1000ar_klimaar2100',
+        name: '1000-års stormflo i år 2100',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    // 20-års stormflo i dag
+    const stormflo20ar_klimaarna = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'stormflo20ar_klimaarna',
+        name: '20-års stormflo i dag',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    // 200-års stormflo i dag
+    const stormflo200ar_klimaarna = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'stormflo200ar_klimaarna',
+        name: '200-års stormflo i dag',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    // 200-års stormflo i år 2100
+    const stormflo200ar_klimaar2100 = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'stormflo200ar_klimaar2100',
+        name: '200-års stormflo i år 2100',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    // Øvre estimat stormflo i dag
+    const stormfloovreestimat_klimaarna = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'stormfloovreestimat_klimaarna',
+        name: 'Øvre estimat stormflo i dag',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    // Øvre estimat stormflo i år 2100
+    const stormfloovreestimat_klimaar2100 = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'stormfloovreestimat_klimaar2100',
+        name: 'Øvre estimat stormflo i år 2100',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    // Øvre estimat stormflo i år 2150
+    const stormfloovreestimat_klimaar2150 = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.stormflo_havniva?', {
+        layers: 'stormfloovreestimat_klimaar2150',
+        name: 'Øvre estimat stormflo i år 2150',
+        format: 'image/png',
+        crs: epsg_crs,
+        version: '1.3.0',
+        transparent: true,
+        tileSize: tile_size,
+        tiled: true,
+        bounds: bbox,
+        opacity: start_opacity
+    })
+
+    var map = L.map('map', {
+        center: vv,
+        zoom: 10,
+    });
+
+    map.createPane("left");
+    map.createPane("right");
+
+    const basemaps = {
+        'Topografisk norgeskart grå': basemap
+    };
+
+    var overlays = {
+        'Middelhøyvann nå': middelhoyvann_klimaarna,
+        'Middelhøyvann i år 2100': middelhoyvann_klimaar2100,
+        'Middelhøyvann i år 2150': middelhoyvann_klimaar2150,
+        '1000-års stormflo i dag': stormflo1000ar_klimaarna,
+        '1000-års stormflo i år 2100': stormflo1000ar_klimaar2100,
+        '20-års stormflo i dag': stormflo20ar_klimaarna,
+        '200-års stormflo i dag': stormflo200ar_klimaarna,
+        '200-års stormflo i år 2100': stormflo200ar_klimaar2100,
+        'Øvre estimat stormflo i dag': stormfloovreestimat_klimaarna,
+        'Øvre estimat stormflo i år 2100': stormfloovreestimat_klimaar2100,
+        'Øvre estimat stormflo i år 2150': stormfloovreestimat_klimaar2150
+    }
+
+    //L.control.layers(overlays).addTo(map);
+    basemap.addTo(map);
+    dekningskart.addTo(map);
+
+    for (const [key, value] of Object.entries(overlays)) {
+        value.addTo(map);
+    }
+
+    var current_left = middelhoyvann_klimaarna
+    var current_right = middelhoyvann_klimaar2100
+    current_left.setOpacity(1);
+    current_right.setOpacity(1);
+
+    const options = {
+        button: document.getElementById('my-button'),
+    };
+
+    var swipe_mode = L.Control.swipeMode(current_left, current_right, options).addTo(map);
+    swipe_mode.toggle();
+
+    function start_toggle() {
+        if (swipe_mode.enabled()) {
+            document.querySelector('#my-button').innerText = 'Skru sammenligning på';
+            document.getElementById("floatingSelectRight").disabled=true;
+            current_right.setOpacity(0);
+        } else {
+            document.querySelector('#my-button').innerText = 'Skru sammenligning av';
+            document.getElementById("floatingSelectRight").disabled=false;
+            current_right.setOpacity(1);
+        }
+    }
+
+    function change_left(new_left) {
+        if (current_right === overlays[new_left]) {
+            alert("Kan ikke velge samme lag på begge sider. Velg et annet lag!");
+            let last_key = getKeyByValue(overlays, current_left);
+            document.getElementById("floatingSelectLeft").value =last_key;
+        } else {
+            current_left.setOpacity(0);
+            current_left = overlays[new_left];
+            swipe_mode.setLeftLayer(current_left);
+            current_left.setOpacity(1);
+        }
+    }
+
+    function change_right(new_right) {
+        if (current_left === overlays[new_right]) {
+            alert("Kan ikke velge samme lag på begge sider. Velg et annet lag!");
+            let last_key = getKeyByValue(overlays, current_right);
+            document.getElementById("floatingSelectRight").value =last_key;
+        } else {
+            current_right.setOpacity(0);
+            current_right = overlays[new_right];
+            swipe_mode.setRightLayer(current_right);
+            current_right.setOpacity(1);
+        }
+    }
+
+    function getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+    }
+
+</script>
+</body>
+</html>
