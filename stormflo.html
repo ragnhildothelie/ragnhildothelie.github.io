@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaflet Kart med Posisjon</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.84.2/dist/L.Control.Locate.min.css">
     <style>
         #map { height: 100vh; }
     </style>
@@ -12,6 +13,7 @@
 <body>
 <div id="map"></div>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.84.2/dist/L.Control.Locate.min.js"></script>
 
 <script>
     const tile_size = L.point(2488, 1959)
@@ -181,56 +183,13 @@
     // Initialiser kartet
     let  map = L.map('map').setView([60, 10], 5);
 
-    // Lag en ny knapp-kontroll
-    var userMarker;
-
-    // Funksjon for å spore posisjonen kontinuerlig med feilhåndtering
-    function trackUserPosition() {
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(
-                function (position) {
-                    var lat = position.coords.latitude;
-                    var lon = position.coords.longitude;
-                    var userLocation = [lat, lon];
-
-                    // Hvis markøren allerede finnes, flytt den
-                    if (userMarker) {
-                        userMarker.setLatLng(userLocation);
-                    } else {
-                        // Opprett en markør hvis den ikke eksisterer
-                        userMarker = L.marker(userLocation).addTo(map)
-                            .bindPopup("Din oppdaterte posisjon").openPopup();
-                    }
-
-                    // Zoom til ny posisjon hvis ønskelig
-                    map.setView(userLocation, 15);
-                },
-                function (error) {
-                    // Feilhåndtering
-                    switch (error.code) {
-                        case error.PERMISSION_DENIED:
-                            alert("Tillatelse til posisjon ble nektet av brukeren.");
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            alert("Posisjonsdata er ikke tilgjengelig.");
-                            break;
-                        case error.TIMEOUT:
-                            alert("Forespørselen om posisjon tok for lang tid.");
-                            break;
-                        default:
-                            alert("En ukjent feil oppstod.");
-                    }
-                },
-                { enableHighAccuracy: true }
-            );
-        } else {
-            alert("Geolokasjon støttes ikke av din nettleser.");
-        }
-    }
-
-    // Start kontinuerlig posisjonssporing
-    trackUserPosition();
-
+    L.control
+        .locate({
+            strings: {
+                title: "Show me where I am, yo!"
+            }
+        })
+        .addTo(map);
 
     const basemaps = {
         'Open street map': osm
