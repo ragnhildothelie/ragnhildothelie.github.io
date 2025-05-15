@@ -184,29 +184,45 @@
     // Lag en ny knapp-kontroll
     var userMarker;
 
-    // Funksjon for å oppdatere posisjonen kontinuerlig
+    // Funksjon for å spore posisjonen kontinuerlig med feilhåndtering
     function trackUserPosition() {
         if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(function (position) {
-                var lat = position.coords.latitude;
-                var lon = position.coords.longitude;
-                var userLocation = [lat, lon];
+            navigator.geolocation.watchPosition(
+                function (position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+                    var userLocation = [lat, lon];
 
-                // Hvis markøren allerede finnes, flytt den
-                if (userMarker) {
-                    userMarker.setLatLng(userLocation);
-                } else {
-                    // Opprett en markør hvis den ikke eksisterer
-                    userMarker = L.marker(userLocation).addTo(map)
-                        .bindPopup("Din oppdaterte posisjon").openPopup();
-                }
+                    // Hvis markøren allerede finnes, flytt den
+                    if (userMarker) {
+                        userMarker.setLatLng(userLocation);
+                    } else {
+                        // Opprett en markør hvis den ikke eksisterer
+                        userMarker = L.marker(userLocation).addTo(map)
+                            .bindPopup("Din oppdaterte posisjon").openPopup();
+                    }
 
-                // Zoom til ny posisjon hvis ønskelig
-                map.setView(userLocation, 15);
-
-            }, function () {
-                alert("Kunne ikke hente posisjon.");
-            }, { enableHighAccuracy: true });
+                    // Zoom til ny posisjon hvis ønskelig
+                    map.setView(userLocation, 15);
+                },
+                function (error) {
+                    // Feilhåndtering
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            alert("Tillatelse til posisjon ble nektet av brukeren.");
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            alert("Posisjonsdata er ikke tilgjengelig.");
+                            break;
+                        case error.TIMEOUT:
+                            alert("Forespørselen om posisjon tok for lang tid.");
+                            break;
+                        default:
+                            alert("En ukjent feil oppstod.");
+                    }
+                },
+                { enableHighAccuracy: true }
+            );
         } else {
             alert("Geolokasjon støttes ikke av din nettleser.");
         }
